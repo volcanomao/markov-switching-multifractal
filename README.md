@@ -1,3 +1,8 @@
+# Introduction
+The multifractal approach is a compelling alternative for modeling financial returns, and volatility in particular. Multifractal analysis reveals that returns observed at different time horizons exhibit several forms of scale invariance, based on multifractal moment-scaling. Calvet & Fisher (2002), Mandelbrot, Calvet & Fisher (1997a, 1997b, 1997c), and Ghashgaie, Breymann, Peinke, Talkner, & Dodge (1996) found early evidence that the moments of the absolute value of price changes, $\mathbb{E} \left( {\mid p \left( t + \Delta t \right) - p \left( t \right) \mid}^q \right)$, scale as power functions of the horizon $\Delta t$. This observation motivated the construction of early multifractal diffusions (see for example Bacry, Delour & Muzy (2001) and Calvet & Fisher (2001)). Subsequently, the Markov-Switching Multifractal, $\mathrm{MSM} \left( \bar k \right)$ or MSM,  of Calvet & Fisher (2004, 2008a) was shown to capture well not only the dynamics of returns series - unpredictability, fat tails, long memory - but also moment scaling (see for example Calvet & Fisher (2008a, 2004, 2001), and Liu, Matteo & Lux (2007)). MSM assumes that the size of a price change is driven by a product of components that have invariant distributions but different degrees of persistence, where each component follows a Markov chain. MSM thus constructs a multifractal measure stochastically over time.
+
+
+
 # Set up
 
 
