@@ -1,26 +1,32 @@
-# 00 - Get Started
+# Background
+
+The Markov-switching multifractal stochastic volatility model (MSM) of Calvet & Fisher (2004, 2008a)) permits the parsimonious specification of a high-dimensional state space. In Collins (2020) I showed that out-of-sample performance improved when the state space was expanded, high-frequency data used, and microstructure noise taken into account. I enabled maximum likelihood estimation and analytical forecasting with up to 13 volatility frequencies and over 8,000 states, some eight times higher than previous literature, using a Python implementation of MSM, the basis for which is presented in this repo. 
+
+This Python implementation of MSM introduced a stochastic algorithm that combined heuristic procedures with local searches to perform an enhanced exploration of the state space in conjunction with local optimization. In my work, rigorous preparation and cleansing of data, sparse sampling, and return innovations weighted by the respective depth of the best bid and ask, mitigated microstructure noise. These developments resulted in a well-specified model, better able to use the increased information provided to it by large high frequency (HF) datasets. In-sample model selection tests showed statistically significant monotonic improvement in the model as more volatility components were introduced. MSM(13) was compared to the relative accuracy of out-of-sample forecasts produced by a realized volatility measure using the heterogeneous autoregressive (HAR) model of Corsi (2009). MSM(13) provided comparatively better, statistically significant, forecasts than HAR most of the time at 1-hour, 1-day, and 2-day horizons for equity HF (Apple and J.P.Morgan) and foreign exchange HF (EURUSD) returns series. MZ regressions showed little sign of bias in the MSM(13) forecasts. These results suggest MSM may provide a viable alternative to established realized volatility estimators in high-frequency settings.
 
 
 
-There are a bunch of recommendations on the internet. Different people can have different preferences for editors, settings etc. The following describes the procedure of what worked well for me. Feel free to take this as a reference and add your personal touch to it.
+# Setting up the Python implementation of MSM
 
-### I. Setting up a new machine for data science
+Different views pertain re editors, settings, etc. If you have not used Python before, the following describes a procedure that has worked well for me.
 
-1. Download python install package from [the official python website](https://www.python.org/downloads/windows/). Make sure that the version is Python 3.0.0 or above, and check the requirement of the [tensorflow library.](https://www.tensorflow.org/install) I prefer not to install python from third party providers like [Anaconda](https://www.anaconda.com/). Although it is faster to get all popular IDEs from anaconda, it is often more difficult to debug through third party app when something go wrong.
+### I. Setting up a virtual environment to run Python and the MSM
+
+1. Download the Python install package from [the official python website](https://www.python.org/downloads/windows/). Be sure that the version is Python 3.0.0 or above, and check the requirement of the [tensorflow library.](https://www.tensorflow.org/install) I prefer not to use a third party provider like [Anaconda](https://www.anaconda.com/). Although it is faster to get the popular IDEs via Anaconda, I have found it to be more difficult to debug once things progress beyond moderately complex.
 
    > **Important: check box at bottom "Add Python 3.7 to PATH'**
 
 2. Install [gitbash](https://gitforwindows.org/)
 
-3. (Optional) A lot of data analytics python libraries require you to install the Microsoft Visual Studio C++ command line tools to be installed. Unfortunately, when you try to install these python libraries, they often fail with unhelpful error messages. So better to install it right from the beginning! [https://visualstudio.microsoft.com/visual-cpp-build-tools/](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
+3. (Optional) A lot of Python libraries require that you install Microsoft Visual Studio C++. These Python libraries may fail, sometimes with unhelpful error messages, in the abscence of it. IMHO, save some pain later and install it at the outset [https://visualstudio.microsoft.com/visual-cpp-build-tools/](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
 
-4. (Optional) Gitbash's console is is definitely good, another console that I like is  [cmder](https://cmder.net/). It supports a lot more customization, and split screen features.
+4. (Optional) Gitbash's console is great. But another console that I like is  [cmder](https://cmder.net/). It supports more customization, and split screen features.
 
-5. (Choose your own) You will need a python script editor on your computer. By far I think [PyCharm](https://www.jetbrains.com/pycharm/) works best. Other popular choices are [Sublime Text](https://www.sublimetext.com/), [Atom](https://atom.io/).
+5. (Choose your own) You will need a Python script editor on your computer. I like [PyCharm](https://www.jetbrains.com/pycharm/). Other popular choices are [Sublime Text](https://www.sublimetext.com/), and [Atom](https://atom.io/).
 
-6. Open the console (using gitbash/cmder/anaconda prompt etc.), **with administration privilege**. If it is not opened with administration privilege, it might fail to install some python packages.
+6. Open the console (using gitbash/cmder/etc.), **with administration privilege**. 
 
-7. Check python version and upgrade `pip` to the latest version by typing the following commands in the console.
+7. Check your Python version and upgrade `pip` to the latest version by typing the following commands in the console.
 
    ```bash
    python -V
@@ -35,11 +41,11 @@ There are a bunch of recommendations on the internet. Different people can have 
 
 
 
-### II. Setting up a new data science project.
+### II. Setting up a new project for MSM.
 
 
 
-1. Create a virtual environment for each project. This ensure that every packages to be installed are properly documented. It also prevents the project packages from contaminating your original python installation. Sometimes if you are working on several projects, and they require different versions of the same package, virtual environment ensures that they are separately and properly installed. Common names for the virtual environment are `venv`, `.venv`, `.venv_project_name`. If you create the virtual environment inside your project folder, make sure that they are excluded from git using the `.gitignore` file.
+1. Tip: Create a virtual environment. This will ensure that the packages you need to install are properly documented. It will also prevent packages from contaminating your original python installation.
 
    ```
    virtualenv .venv
@@ -51,13 +57,13 @@ There are a bunch of recommendations on the internet. Different people can have 
    .venv\Scripts\activate
    ```
 
-3. Install cookiecutter, this helps you to set up a standard repository structure for a data science project.
+3. (Optional) Install cookiecutter, this will help you to set up a standard repository structure.
 
    ```
    pip install cookiecutter
    ```
 
-4. Navigate to your project directory, and create the folder structure using cookiecutter. (Please take a look at the [details](https://drivendata.github.io/cookiecutter-data-science/) on how to use the default file structure.)
+4. Navigate to your project directory, and create the folder structure using cookiecutter. (See [details](https://drivendata.github.io/cookiecutter-data-science/) for guidance re the default file structure.)
 
    ```
    cookiecutter https://github.com/drivendata/cookiecutter-data-science
@@ -114,80 +120,25 @@ There are a bunch of recommendations on the internet. Different people can have 
 
    
 
-5. Install jupyter notebook and jupyter lab. Whether to use jupyter notebook or jupyter lab, it is completely a personal preference.
+5. Install jupyter notebook and jupyter lab. I tend to use lab.
 
    ```
    pip install jupyter
    pip install jupyterlab
    ```
 
-6. Install some common machine learning libraries.
+6. Install the following machine learning libraries.
 
    ```
    pip install numpy
    pip install pandas
    pip install python-dotenv
    pip install scikit-learn
+   pip install scipy
    pip install matplotlib
    pip install seaborn
    pip install tensorflow
-   pip install pandas-profiling[notebook]
-   pip install progressbar2
+   pip install cupy
+   pip install numba
    ```
-
-7. (Optional) Install the following if the project involves text processing.
-
-   ```
-   pip install nltk
-   pip install Unidecode
-   pip install pycontractions
-   pip install gensim
-   ```
-
-8. (Optional) Install [jupyter notebook extensions](https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html) to advance your editor.
-
-   ```
-   pip install jupyter_contrib_nbextensions
-   jupyter contrib nbextension install --user
-   ```
-
-   
-
-9. (Under development) Make sure that you have access to [FTI's repository](https://gitlab.com/fti-ai-team/99-code-library) Install the FTI library by using the following command:
-
-   ```
-   pip install git+ssh://git@gitlab.com/fti-ai-team/99-code-library.git#egg=ftids
-   ```
-
-10. When you finish you work, deactivate the virtual environment.
-
-    ```
-    deactivate
-    ```
-
-    
-
-
-
-### III. Jupyter Lab / Jupyter Notebook
-
-We provide you with a handy notebook template to begin with:
-
-![notebook_screenshot](https://gitlab.com/fti-ai-team/00-get-started/-/raw/master/notebook_screeshot.PNG)
-
-
-
-### Explanation of different files in the repository
-
-
-
-FTI_Logo_cmyk.eps: Official logo from marketing
-
-FTI_Logo_cmyk.png: png version of the official logo
-
-FTI_Logo_RGB.eps: Official logo from marketing
-
-FTI_Logo_RGB.png: png version of the official logo
-
-
 
