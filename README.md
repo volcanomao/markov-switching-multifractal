@@ -1,4 +1,4 @@
-# 00 - Get Started
+# Set up
 
 
 
