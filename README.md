@@ -39,13 +39,7 @@ Different views pertain re editors, settings, etc. If you have not used Python b
    pip install virtualenv
    ```
 
-
-
-### II. Setting up a new project for MSM.
-
-
-
-1. Tip: Create a virtual environment. This will ensure that the packages you need to install are properly documented. It will also prevent packages from contaminating your original python installation.
+9. Tip: Create a virtual environment. This will ensure that the packages you need to install are properly documented. It will also prevent packages from contaminating your original python installation.
 
    ```
    virtualenv .venv
