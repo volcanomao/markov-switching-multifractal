@@ -6,11 +6,9 @@ This Python implementation of MSM introduced a stochastic algorithm that combine
 
 
 
-# Setting up the Python implementation of MSM
+# Setting up a virtual environment to run Python and the MSM
 
 Different views pertain re editors, settings, etc. If you have not used Python before, the following describes a procedure that has worked well for me.
-
-### I. Setting up a virtual environment to run Python and the MSM
 
 1. Download the Python install package from [the official python website](https://www.python.org/downloads/windows/). Be sure that the version is Python 3.0.0 or above, and check the requirement of the [tensorflow library.](https://www.tensorflow.org/install) I prefer not to use a third party provider like [Anaconda](https://www.anaconda.com/). Although it is faster to get the popular IDEs via Anaconda, I have found it to be more difficult to debug once things progress beyond moderately complex.
 
