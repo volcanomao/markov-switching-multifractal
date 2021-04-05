@@ -1,4 +1,4 @@
-# Introduction
+# Background
 
 The Markov-switching multifractal stochastic volatility model (MSM) of Calvet & Fisher (2004, 2008a)) permits the parsimonious specification of a high-dimensional state space. In Collins (2020) I showed that out-of-sample performance improved when the state space was expanded, high-frequency data used, and microstructure noise taken into account. I enabled maximum likelihood estimation and analytical forecasting with up to 13 volatility frequencies and over 8,000 states, some eight times higher than previous literature, using a Python implementation of MSM, the basis for which is presented in this repo. 
 
