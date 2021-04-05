@@ -35,7 +35,7 @@ Different views pertain re editors, settings, etc. If you have not used Python b
 
 
 
-### II. Setting up a new project.
+### II. Setting up a new project for MSM.
 
 
 
