@@ -9,9 +9,6 @@ from numba import jit, njit, prange, float64, int64
 """Markov-Switching Multifractal
 Author: John Collins, john.collins@edhec.com
 Version: 0.3, 11-March-2020
-Notes: R-squared and MSE added to pred function.
-       Sigma is a positive constant (Calvet & Fisher, 2004), but MATLAB code of C&F (2013) adjusts: std(data)*sqrt(252)
-       I make no sqrt(time) adjustment, for consistency across datasets. Therefore, sigma = np.std(data)
 """
 
 def glo_min(kbar, data, niter, temperature, stepsize):
@@ -55,8 +52,6 @@ def glo_min(kbar, data, niter, temperature, stepsize):
 def loc_min(kbar, data):
     """Function for step 1: local minimizations.
     Parameter estimation using bounded optimization (scipy.optimize.fminbound)
-
-    CRITICAL: MAKE SIGMA AN ARGUMENT | to deal with time-variance
     """
 
     # set up
@@ -122,7 +117,7 @@ def g_LLb_h(theta, kbar, data):
 
 
 def g_LL(m0, kbar, data, theta_in):
-    """[DESCRIBE]
+    """returns a vector of log likelihoods
     """
 
     # set up
@@ -155,7 +150,7 @@ def g_LL(m0, kbar, data, theta_in):
 
 @jit(nopython=True)
 def _LL(kbar2, T, A, g_m, w_t):
-    """[DESCRIBE]
+    """returns a vector of log likelihoods
     """
 
     LLs = np.zeros(T)
@@ -216,8 +211,6 @@ def g_pi_t(m0, kbar, data, theta_in):
 
 @jit(nopython=True)
 def _t(kbar2, T, A, g_m, w_t):
-    """[DESCRIBE]
-    """
 
     pi_mat = np.zeros((T+1,kbar2))
     pi_mat[0,:] = (1/kbar2)*np.ones(kbar2)
@@ -235,64 +228,6 @@ def _t(kbar2, T, A, g_m, w_t):
     pi_t = pi_mat[-1,:]
 
     return(pi_t)
-
-
-def pred(theta, kbar, data, K):
-    """Compute K-step ahead forecasts, MZ regressions, MSE and R-squared coefficient
-    """
-
-    # set up
-    b = theta[0]
-    m0 = theta[1]
-    gamma_kbar = theta[2]
-    sigma = theta[3]
-    kbar2 = 2**kbar
-    pred_means = np.zeros(K)
-    preds = []
-    vol_list = []
-    y_test = data[-K:]
-
-    # distribution of states for prediction
-    theta_in = unpack(theta)
-    pi_t = g_pi_t(m0, kbar, data, theta_in)
-
-    # gammas and transition probabilities
-    A = g_t(kbar, b, gamma_kbar)
-
-    # switching probabilities [CONFIRM THIS IS WHAT THIS IS]
-    g_m = s_p(kbar, m0)
-
-    # K-step vol prediction, MZ regression, MSE and R-squared
-    pi_n = np.zeros((K,pi_t.shape[0]))
-    for i in range(K):
-        A_n = np.array(np.matrix(A)**(i+1))
-        pi_n[i,:] = np.dot(pi_t,A_n)
-        pred = (sigma)**2*(g_m)
-        pred_means[i] = np.average(pred, weights = pi_n[i,:])
-
-    preds.append(pred_means)
-    vol_list.append(y_test**2)                        # WHY SQUARED RETURNS?
-    X_sim = np.concatenate(preds).ravel()
-    X_sim = np.c_[np.ones(len(X_sim)),X_sim]
-    Y_sim = np.concatenate(vol_list).ravel()
-
-    # MZ regressions of squared returns on forecasts  (X=pred, Y=true)   # WHY SQUARED RETURNS?
-    Y_mz = pd.DataFrame(Y_sim)
-    X_mz = pd.DataFrame(X_sim[:,1])
-    compare_df = pd.concat([Y_mz, X_mz], axis=1)
-    compare_df.columns = ['Y_mz', 'X_mz']
-    mz_reg = f'Y_mz ~ X_mz'
-    mz_result = sm.ols(mz_reg, data=compare_df).fit()
-    g_0 = mz_result.params[0]
-    g_1 = mz_result.params[1]
-
-    # Stats: R-square, MSE, F-test, F-test p-value
-    r_2 = mz_result.rsquared
-    mse = np.mean((compare_df['Y_mz'] - compare_df['X_mz']) ** 2)
-    f_test =  mz_result.fvalue
-    f_pval = mz_result.f_pvalue
-
-    return(X_sim, Y_sim, g_0, g_1, mse, r_2, f_test, f_pval)
 
 
 class memoize(dict):
@@ -362,8 +297,6 @@ def j_b(x, num_bits):
 
 @jit(nopython=True)
 def s_p(kbar, m0):
-    """[DESCRIBE]
-    """
 
     # switching probabilities
     m1 = 2-m0
