@@ -6,7 +6,7 @@ This Python implementation of MSM introduced a stochastic algorithm that combine
 
 
 
-# Setting up a virtual environment to run Python and the MSM
+# Setting up a virtual environment
 
 Different views pertain re editors, settings, etc. If you have not used Python before, the following describes a procedure that has worked well for me.
 
@@ -70,4 +70,14 @@ Different views pertain re editors, settings, etc. If you have not used Python b
    pip install cupy
    pip install numba
    ```
+
+# Accompanying Jupyter notebook
+
+[DESCRIBE THE NOTEBOOK BRIEFLY AND REFER THE READER TO THE NOTEBOOK]
+
+# MSM Python code
+
+[DESCRIBE THE PYTHON CODE BRIEFLY AND REFER THE READER TO THE .PY FILE]
+
+
 
