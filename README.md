@@ -73,11 +73,11 @@ Different views pertain re editors, settings, etc. If you have not used Python b
 
 # Accompanying Jupyter notebook
 
-[DESCRIBE THE NOTEBOOK BRIEFLY AND REFER THE READER TO THE NOTEBOOK]
+The accompanying Jupyter notebook (see MSM_03.ipynb) applies ML estimation to two datasets. To establish a benchmark for the the model and validate that it is accurately constructed, I simulate the first dataset using the MSM framework, and test that the model computes parameters that are acceptably close to true.  The second dataset (see DEXJPUS.csv) allows replication of the results of Calvet & Fisher (2004, 2008) with the same data, and thus provides an anchor for subsequent analysis.
 
 # MSM Python code
 
-[DESCRIBE THE PYTHON CODE BRIEFLY AND REFER THE READER TO THE .PY FILE]
+See MSM_03.py.
 
 
 
