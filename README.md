@@ -34,7 +34,6 @@ If you are new to Python, the following may be helpful.
    pip install scipy
    pip install matplotlib
    pip install seaborn
-   pip install cupy
    pip install numba
    ```
 
