@@ -40,7 +40,7 @@ If you are new to Python, the following may be helpful.
 
 # Jupyter notebook
 
-The accompanying Jupyter notebook (see MSM_03.ipynb) illustrates a basic MSM set up and applies ML estimation to two datasets. To establish a benchmark for the the model and validate that it is accurately constructed, I simulate the first dataset using the MSM framework, and test that the model computes parameters that are acceptably close to true.  The second dataset (see DEXJPUS.csv) allows replication of the results of Calvet & Fisher (2004, 2008) with the same data, and thus provides an anchor for subsequent analysis.
+The accompanying Jupyter notebook (see MSM_03.ipynb) illustrates a basic MSM set up and applies ML estimation to two datasets. To establish a benchmark for the the model and validate that it is accurately constructed, I simulate the first dataset (see MSM_Scripts.py) using the MSM framework, and test that the model computes parameters that are acceptably close to true.  The second dataset (see DEXJPUS.csv) allows replication of the results of Calvet & Fisher (2004, 2008) with the same data, and thus provides an anchor for subsequent analysis.
 
 # Python code
 
