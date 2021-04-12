@@ -31,7 +31,6 @@ If you are new to Python, the following may be helpful.
    pip install pandas
    pip install python-dotenv
    pip install scikit-learn
-   pip install scipy
    pip install matplotlib
    pip install seaborn
    pip install numba
