@@ -1,5 +1,4 @@
 import numpy as np
-import cupy as cp
 import pandas as pd
 import scipy.optimize as opt
 import statsmodels.formula.api as sm

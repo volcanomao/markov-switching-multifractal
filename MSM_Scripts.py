@@ -1,5 +1,4 @@
 import numpy as np
-import cupy as cp
 
 def simulateData_NumPy(b,m0,gamma_kbar,sig,kbar,T):
 
