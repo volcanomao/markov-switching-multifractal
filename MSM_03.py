@@ -2,8 +2,8 @@ import numpy as np
 import cupy as cp
 import pandas as pd
 import scipy.optimize as opt
-from statsmodels import regression
 import statsmodels.formula.api as sm
+from statsmodels import regression
 from numba import jit, njit, prange, float64, int64
 
 """Markov-Switching Multifractal
@@ -209,6 +209,7 @@ def g_pi_t(m0, kbar, data, theta_in):
 
     return(pi_t)
 
+
 @jit(nopython=True)
 def _t(kbar2, T, A, g_m, w_t):
 
@@ -243,10 +244,9 @@ class memoize(dict):
         result = self[key] = self.func(*key)
         return result
 
+
 @memoize
 def  g_t(kbar, b, gamma_kbar):
-    """I use a memoize decorator to accelerate compute of the transition probability matrix A
-    """
 
     # compute gammas
     gamma = np.zeros((kbar,1))
@@ -272,20 +272,8 @@ def  g_t(kbar, b, gamma_kbar):
     return(A)
 
 
-# @jit(nopython=True)
-# @njit(parallel=True)
-# def g_t_jit(kbar, b, gamma_kbar):
-    """Vectorized and numba accelerated version of g_t.
-    I vectorize the compute of the transition probability matrix A and accelerate it with numba
-    """
-
-    # For working version of code, see | DEMSMv2.ipynb
-
-    # return(A)
-
-
 def j_b(x, num_bits):
-    """I vectorize the first part of computing of the transition probability matrix A
+    """I vectorize the first part of computing the transition probability matrix A
     """
 
     xshape = list(x.shape)
