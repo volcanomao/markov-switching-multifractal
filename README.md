@@ -12,11 +12,9 @@ If you are new to Python, the following may be helpful.
 
 # Python
 
-1. Download a Python install package from [the official python website](https://www.python.org/downloads/windows/). Be sure that the version is current, and certainly Python 3.0.0 or above.  I prefer not to use a third party provider like [Anaconda](https://www.anaconda.com/). Although it may be faster to get a working set up via Anaconda, I have found it to be more difficult to debug once things progress beyond moderately complex.
+1. Download a Python install package from [the official python website](https://www.python.org/downloads/windows/). I prefer not to use [Anaconda](https://www.anaconda.com/). Although it may be faster to get a working set up via Anaconda, I have found it to be more difficult to debug once things progress beyond moderately complex.
 
-   > **Important: check box at bottom during install "Add Python 3.7 to PATH'**
-
-2. Install [gitbash](https://gitforwindows.org/).
+2. Download and install [gitbash](https://gitforwindows.org/).
 
 3. Many Python libraries require Microsoft Visual Studio C++. These libraries may fail, with somewhat impenetrable error messages at times, in the abscence of it. IMHO save some pain later and install it at the outset [https://visualstudio.microsoft.com/visual-cpp-build-tools/](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
 
