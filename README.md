@@ -1,62 +1,32 @@
 # Background
 
-The Markov-switching multifractal stochastic volatility model (MSM) of Calvet & Fisher (2004, 2008)) permits the parsimonious specification of a high-dimensional state space. In Collins (2020) I showed that MSM's out-of-sample performance improved when the state space was expanded, high-frequency data used, and microstructure noise taken into account. I enabled maximum likelihood estimation and analytical forecasting with up to 13 volatility frequencies and over 8,000 states, some eight times higher than previous literature, using a Python implementation of MSM, the code for which is presented in this repo (see MSM_03.py). 
+The Markov-switching multifractal stochastic volatility model (MSM) of Calvet & Fisher (2004, 2008)) permits the parsimonious specification of a high-dimensional state space. In Collins (2020) I showed that MSM's out-of-sample performance improved when the state space was expanded, high-frequency data used, and microstructure noise taken into account. I enabled maximum likelihood estimation and analytical forecasting with up to 13 volatility frequencies and over 8,000 states, some eight times higher than previous literature, using a Python implementation of MSM, the code for which is presented in this repo (see MSM_03.py). To expand the state space in this way required a significantly faster implementation of MSM.  This Python implementation therefore used Numba, a just-in-time (JIT) compiler, to translate some of my Python functions to optimized machine code at runtime, in turn achieved via use of LLVM compiler libraries. It also used memoization, a technique for recording intermediate results to avoid repeated calculations, and introduced a stochastic algorithm that combined heuristic procedures with local searches to perform an enhanced exploration of the state space in conjunction with local optimization. This set up reduced the compute time versus a baseline Python implementation of the MATLAB code of Calvet & Fisher (2013) on the same machine from nearly 9 minutes to just under 1 second (comparison based upon the benchmark JPYUSD (DEXJPUS) daily returns dataset with kbar = 4). In my work, rigorous preparation and cleansing of data, sparse sampling, and return innovations weighted by the respective depth of the best bid and ask, mitigated microstructure noise. These developments resulted in a well-specified model, better able to use the increased information provided to it by large high frequency (HF) datasets. 
 
-This Python implementation of MSM introduced a stochastic algorithm that combined heuristic procedures with local searches to perform an enhanced exploration of the state space in conjunction with local optimization. In my work, rigorous preparation and cleansing of data, sparse sampling, and return innovations weighted by the respective depth of the best bid and ask, mitigated microstructure noise. These developments resulted in a well-specified model, better able to use the increased information provided to it by large high frequency (HF) datasets. In-sample model selection tests showed statistically significant monotonic improvement in the model as more volatility components were introduced. MSM(13) was compared to the relative accuracy of out-of-sample forecasts produced by a realized volatility measure using the heterogeneous autoregressive (HAR) model of Corsi (2009). MSM(13) provided comparatively better, statistically significant, forecasts than HAR most of the time at 1-hour, 1-day, and 2-day horizons for equity HF (Apple and J.P.Morgan) and foreign exchange HF (EURUSD) returns series. MZ regressions showed little sign of bias in the MSM(13) forecasts. These results suggest MSM may provide a viable alternative to established realized volatility estimators in high-frequency settings.
+In-sample model selection tests showed statistically significant monotonic improvement in the model as more volatility components were introduced. MSM(13) was compared to the relative accuracy of out-of-sample forecasts produced by a realized volatility measure using the heterogeneous autoregressive (HAR) model of Corsi (2009). MSM(13) provided comparatively better, statistically significant, forecasts than HAR most of the time at 1-hour, 1-day, and 2-day horizons for equity HF (Apple and J.P.Morgan) and foreign exchange HF (EURUSD) returns series. MZ regressions showed little sign of bias in the MSM(13) forecasts. These results suggest MSM may provide a viable alternative to established realized volatility estimators in high-frequency settings.
 
-This repo contains my Python implementation of MSM (MSM_03.py) along with a Jupyter notebook (see MSM_03.ipynb) that introduces a basic set up, for convenience.  In the notebook I apply ML estimation to two datasets.  Firstly, to establish a benchmark for the the model and validate that it is accurately constructed, I simulate a dataset (see MSM_Scripts.py) using the MSM framework, and test that the model computes parameters that are acceptably close to true.  The second dataset (see DEXJPUS.csv) allows replication of the results of Calvet & Fisher (2004, 2008) with the same data, and thus provides an anchor for subsequent analysis.
+# This repo
 
-# Setting up a virtual environment
+This repo contains my Python implementation of MSM (MSM_03.py) along with a Jupyter notebook (see MSM_03.ipynb) containing a basic set up, for convenience.  In the notebook I apply ML estimation to two datasets.  Firstly, to establish a benchmark for the the model and validate that it is accurately constructed, I simulate a dataset (see MSM_Scripts.py) using the MSM framework, and test that the model returns parameters that are acceptably close to true.  The second dataset (see DEXJPUS.csv) allows replication of the results of Calvet & Fisher (2004, 2008) with one of these author's original datasets, and thus provides an anchor for subsequent analysis.
 
-Different views pertain re editors, settings, etc. If you have not used Python before, the following describes a procedure that has worked well for me.
+If you are new to Python, the following may be helpful.
 
-1. Download the Python install package from [the official python website](https://www.python.org/downloads/windows/). Be sure that the version is Python 3.0.0 or above, and check the requirement of the [tensorflow library.](https://www.tensorflow.org/install) I prefer not to use a third party provider like [Anaconda](https://www.anaconda.com/). Although it is faster to get the popular IDEs via Anaconda, I have found it to be more difficult to debug once things progress beyond moderately complex.
+# Python
 
-   > **Important: check box at bottom "Add Python 3.7 to PATH'**
+1. Download a Python install package from [the official python website](https://www.python.org/downloads/windows/). Be sure that the version is current, and certainly Python 3.0.0 or above.  I prefer not to use a third party provider like [Anaconda](https://www.anaconda.com/). Although it may be faster to get a working set up via Anaconda, I have found it to be more difficult to debug once things progress beyond moderately complex.
 
-2. Install [gitbash](https://gitforwindows.org/)
+   > **Important: check box at bottom during install "Add Python 3.7 to PATH'**
 
-3. (Optional) A lot of Python libraries require that you install Microsoft Visual Studio C++. These Python libraries may fail, sometimes with unhelpful error messages, in the abscence of it. IMHO, save some pain later and install it at the outset [https://visualstudio.microsoft.com/visual-cpp-build-tools/](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
+2. Install [gitbash](https://gitforwindows.org/).
 
-4. (Optional) Gitbash's console is great. But another console that I like is  [cmder](https://cmder.net/). It supports more customization, and split screen features.
+3. Many Python libraries require Microsoft Visual Studio C++. These libraries may fail, with somewhat impenetrable error messages at times, in the abscence of it. IMHO save some pain later and install it at the outset [https://visualstudio.microsoft.com/visual-cpp-build-tools/](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
 
-5. (Choose your own) You will need a Python script editor on your computer. I like [PyCharm](https://www.jetbrains.com/pycharm/). Other popular choices are [Sublime Text](https://www.sublimetext.com/), and [Atom](https://atom.io/).
+4. Install a Python script editor.  I like [Atom](https://atom.io/).  Two other popular options are [PyCharm](https://www.jetbrains.com/pycharm/) and [Sublime Text](https://www.sublimetext.com/).
 
-6. Open the console (using gitbash/cmder/etc.), **with administration privilege**. 
+5. Create a [Python virtual environment](https://www.python.org/dev/peps/pep-0405/).  A virtual environment has its own Python binary (allowing creation of environments with various Python versions) and can have its own independent set of installed Python packages in its site directories, whilst still sharing the standard library with the base installed Python.
 
-7. Check your Python version and upgrade `pip` to the latest version by typing the following commands in the console.
+6. Install [Jupyter Notebook](https://jupyter.org/) and/or [Jupyter Lab](https://jupyter.org/install.html). I tend to use Lab.
 
-   ```bash
-   python -V
-   pip install --upgrade pip
-   ```
-
-8. Install virtual environment.
-
-   ```bash
-   pip install virtualenv
-   ```
-
-9. Tip: Create a virtual environment. This will ensure that the packages you need to install are properly documented. It will also prevent packages from contaminating your original python installation.
-
-   ```
-   virtualenv .venv
-   ```
-
-2. Activate the virtual environment.
-
-   ```
-   .venv\Scripts\activate
-   ```
-
-3. Install jupyter notebook and jupyter lab. I tend to use lab.
-
-   ```
-   pip install jupyter
-   pip install jupyterlab
-   ```
-
-4. Install the following machine learning libraries.
+7. Install the following libraries.
 
    ```
    pip install numpy
@@ -66,12 +36,11 @@ Different views pertain re editors, settings, etc. If you have not used Python b
    pip install scipy
    pip install matplotlib
    pip install seaborn
-   pip install tensorflow
    pip install cupy
    pip install numba
    ```
 
-# Accompanying Jupyter notebook
+# MSM Jupyter notebook
 
 The accompanying Jupyter notebook (see MSM_03.ipynb) applies ML estimation to two datasets. To establish a benchmark for the the model and validate that it is accurately constructed, I simulate the first dataset using the MSM framework, and test that the model computes parameters that are acceptably close to true.  The second dataset (see DEXJPUS.csv) allows replication of the results of Calvet & Fisher (2004, 2008) with the same data, and thus provides an anchor for subsequent analysis.
 
