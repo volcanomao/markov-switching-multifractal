@@ -10,7 +10,7 @@ This repo contains my Python implementation of MSM (MSM_03.py) along with a Jupy
 
 If you are new to Python, the following may be helpful.
 
-# Python
+# Python set up
 
 1. Download a Python install package from [the official python website](https://www.python.org/downloads/windows/). I prefer not to use [Anaconda](https://www.anaconda.com/). Although it may be faster to get a working set up via Anaconda, I have found it to be more difficult to debug once things progress beyond moderately complex.
 
@@ -38,11 +38,11 @@ If you are new to Python, the following may be helpful.
    pip install numba
    ```
 
-# MSM Jupyter notebook
+# Jupyter notebook
 
 The accompanying Jupyter notebook (see MSM_03.ipynb) illustrates a basic MSM set up and applies ML estimation to two datasets. To establish a benchmark for the the model and validate that it is accurately constructed, I simulate the first dataset using the MSM framework, and test that the model computes parameters that are acceptably close to true.  The second dataset (see DEXJPUS.csv) allows replication of the results of Calvet & Fisher (2004, 2008) with the same data, and thus provides an anchor for subsequent analysis.
 
-# MSM Python code
+# Python code
 
 See MSM_03.py.
 
