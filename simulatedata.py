@@ -1,6 +1,6 @@
 import numpy as np
 
-def simulateData_NumPy(b,m0,gamma_kbar,sig,kbar,T):
+def simulatedata(b,m0,gamma_kbar,sig,kbar,T):
 
     m0 = m0
     m1 = 2-m0

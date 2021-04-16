@@ -5,10 +5,6 @@ import statsmodels.formula.api as sm
 from statsmodels import regression
 from numba import jit, njit, prange, float64, int64
 
-"""Markov-Switching Multifractal
-Author: John Collins, john.collins@edhec.com
-Version: 0.3, 11-March-2020
-"""
 
 def glo_min(kbar, data, niter, temperature, stepsize):
     """2-step basin-hopping method combines global stepping algorithm with local minimization at each step.
