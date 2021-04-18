@@ -1,27 +1,27 @@
 import numpy as np
 import pandas as pd
 import scipy.optimize as opt
-import statsmodels.formula.api as sm
 from statsmodels import regression
+import statsmodels.formula.api as sm
 from numba import jit, njit, prange, float64, int64
 
-
 def glo_min(kbar, data, niter, temperature, stepsize):
-    """2-step basin-hopping method combines global stepping algorithm with local minimization at each step.
-    Step 1: local minimizations; parameter estimations using bounded optimization (scipy.optimize.fminbound).
-    Step 2: global minimum search using basin-hopping algorithm (scipy.optimize.basinhopping).
+    """2-step basin-hopping method combines global stepping algorithm
+       with local minimization at each step.
     """
 
-    """Step 1: local minimizations
+    """step 1: local minimizations
     """
     theta, theta_LLs, theta_out, ierr, numfunc = loc_min(kbar, data)
 
-    """Step 2: global minimum search using basin-hopping
+    """step 2: global minimum search uses basin-hopping
+       (scipy.optimize.basinhopping)
     """
-    # func = Function to be optimized
+    # objective function
     f = g_LLb_h
 
-    # x0 = initial guess, being theta, from Step 1.  Presents as: [b, m0, gamma_kbar, sigma]
+    # x0 = initial guess, being theta, from Step 1.
+    # Presents as: [b, m0, gamma_kbar, sigma]
     x0 = theta
 
     # basinhopping arguments
@@ -36,8 +36,9 @@ def glo_min(kbar, data, niter, temperature, stepsize):
     # minimizer_kwargs
     minimizer_kwargs = dict(method = "L-BFGS-B", bounds = bounds, args = args)
 
-    res = opt.basinhopping(func = f, x0 = x0, niter = niter, T = T, stepsize = stepsize,
-                           minimizer_kwargs = minimizer_kwargs)
+    res = opt.basinhopping(
+                func = f, x0 = x0, niter = niter, T = T, stepsize = stepsize,
+                minimizer_kwargs = minimizer_kwargs)
 
     parameters, LL, niter, output = res.x,res.fun,res.nit,res.message
 
@@ -45,8 +46,8 @@ def glo_min(kbar, data, niter, temperature, stepsize):
 
 
 def loc_min(kbar, data):
-    """Function for step 1: local minimizations.
-    Parameter estimation using bounded optimization (scipy.optimize.fminbound)
+    """step 1: local minimization
+       parameter estimation uses bounded optimization (scipy.optimize.fminbound)
     """
 
     # set up
@@ -70,7 +71,8 @@ def loc_min(kbar, data):
     # Optimizaton stops when change in x between iterations is less than xtol
     xtol = 1e-05
 
-    # display: 0, no message; 1, non-convergence; 2, convergence too; 3, iteration results.
+    # display: 0, no message; 1, non-convergence; 2, convergence;
+    # 3, iteration results.
     disp = 1
 
     idx = 0
@@ -81,8 +83,9 @@ def loc_min(kbar, data):
             theta_in = [b[i], gamma_kbar[j], sigma]
             args = (kbar, data, theta_in)
 
-            xopt, fval, ierr, numfunc = opt.fminbound(func = f, x1 = m0_l, x2 = m0_u, xtol = xtol,
-                                               args = args, full_output = True, disp = disp)
+            xopt, fval, ierr, numfunc = opt.fminbound(
+                        func = f, x1 = m0_l, x2 = m0_u, xtol = xtol,
+                        args = args, full_output = True, disp = disp)
 
             m0, LL = xopt, fval
             theta_out[idx,:] = b[i], m0, gamma_kbar[j]
@@ -100,19 +103,8 @@ def loc_min(kbar, data):
     return(theta, theta_LLs, theta_out, ierr, numfunc)
 
 
-def g_LLb_h(theta, kbar, data):
-    """bridges global minimization to local minimization
-    """
-
-    theta_in = unpack(theta)
-    m0 = theta[1]
-    LL = g_LL(m0, kbar, data, theta_in)
-
-    return(LL)
-
-
 def g_LL(m0, kbar, data, theta_in):
-    """returns a vector of log likelihoods
+    """return LL, the vector of log likelihoods
     """
 
     # set up
@@ -145,7 +137,7 @@ def g_LL(m0, kbar, data, theta_in):
 
 @jit(nopython=True)
 def _LL(kbar2, T, A, g_m, w_t):
-    """returns a vector of log likelihoods
+    """speed up Bayesian recursion with numba
     """
 
     LLs = np.zeros(T)
@@ -172,7 +164,7 @@ def _LL(kbar2, T, A, g_m, w_t):
 
 
 def g_pi_t(m0, kbar, data, theta_in):
-    """returns pi_t, the current distribution of states for prediction
+    """return pi_t, the current distribution of states
     """
 
     # set up
@@ -227,7 +219,8 @@ def _t(kbar2, T, A, g_m, w_t):
 
 
 class memoize(dict):
-    """I use a memoize decorator to accelerate compute of the transition probability matrix A
+    """use memoize decorator to speed up compute of the
+       transition probability matrix A
     """
     def __init__(self, func):
         self.func = func
@@ -239,9 +232,10 @@ class memoize(dict):
         result = self[key] = self.func(*key)
         return result
 
-
 @memoize
 def  g_t(kbar, b, gamma_kbar):
+    """return A, the transition probability matrix
+    """
 
     # compute gammas
     gamma = np.zeros((kbar,1))
@@ -258,17 +252,19 @@ def  g_t(kbar, b, gamma_kbar):
 
     for i in range(kbar2):
         for m in range(kbar):
-            tmp = np.unpackbits(np.arange(i,i+1,dtype = np.uint16).view(np.uint8))
+            tmp = np.unpackbits(
+                        np.arange(i,i+1,dtype = np.uint16).view(np.uint8))
             tmp = np.append(tmp[8:],tmp[:8])
             prob[i] =prob[i] * gamma[kbar-m-1,tmp[-(m+1)]]
 
-    A = np.fromfunction(lambda i,j: prob[np.bitwise_xor(i,j)],(kbar2,kbar2),dtype = np.uint16)
+    A = np.fromfunction(
+        lambda i,j: prob[np.bitwise_xor(i,j)],(kbar2,kbar2),dtype = np.uint16)
 
     return(A)
 
 
 def j_b(x, num_bits):
-    """I vectorize the first part of computing the transition probability matrix A
+    """vectorize first part of computing transition probability matrix A
     """
 
     xshape = list(x.shape)
@@ -280,6 +276,8 @@ def j_b(x, num_bits):
 
 @jit(nopython=True)
 def s_p(kbar, m0):
+    """speed up computation of switching probabilities with Numba
+    """
 
     # switching probabilities
     m1 = 2-m0
@@ -297,6 +295,17 @@ def s_p(kbar, m0):
         g_m[i] = g
 
     return(np.sqrt(g_m))
+
+
+def g_LLb_h(theta, kbar, data):
+    """bridge global minimization to local minimization
+    """
+
+    theta_in = unpack(theta)
+    m0 = theta[1]
+    LL = g_LL(m0, kbar, data, theta_in)
+
+    return(LL)
 
 
 def unpack(theta):
